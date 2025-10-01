@@ -34,7 +34,7 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
       - name: Test Trivy
         run: |
-          trivy image ${{ env.IMAGE }}:${{ env.TAG }}
+          trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 --format json ${{ env.IMAGE }}:${{ env.TAG }}
 # docker push $IMAGE:$TAG
 # echo "NEW_TAG=$TAG" >> $GITHUB_ENV
 # echo "IMAGE=$IMAGE" >> $GITHUB_ENV
