@@ -34,4 +34,4 @@ jobs:
 
       - name: Test Trivy
         run: |
-          trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 --format json ${{ env.IMAGE }}:${{ env.TAG }}
+          trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ env.TAG }}
