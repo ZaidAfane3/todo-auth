@@ -20,18 +20,21 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Set Global Variables
+        run: |
+          echo "IMAGE=${{ env.GCP_ARTIFACT_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPO_NAME }}/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+          echo "TAG=${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Build 
         run: |
-          IMAGE="${{ env.GCP_ARTIFACT_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPO_NAME }}/${{ env.IMAGE_NAME }}"
-          TAG=${{ github.run_number }}
-          docker build -t $IMAGE:$TAG .
+          docker build -t ${{ env.IMAGE }}:${{ env.TAG }} .
           docker images
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
       - name: Test Trivy
         run: |
-          trivy image $IMAGE:$TAG
+          trivy image ${{ env.IMAGE }}:${{ env.TAG }}
 # docker push $IMAGE:$TAG
 # echo "NEW_TAG=$TAG" >> $GITHUB_ENV
 # echo "IMAGE=$IMAGE" >> $GITHUB_ENV
