@@ -41,6 +41,11 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REPO }} --quiet
+
+
+
       - name: Push to GCP
         run: |
           docker push ${{ env.IMAGE }}:${{ env.TAG }}
