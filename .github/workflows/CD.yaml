@@ -20,7 +20,7 @@ jobs:
       - name: Set Global Variables
         run: |
           echo "REPO=${{ env.ZONE }}-docker.pkg.dev" >> $GITHUB_ENV
-          echo "IMAGE=${{ env.REPO }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPO_NAME }}/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+          echo "IMAGE=${{ env.ZONE }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPO_NAME }}/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
           echo "TAG=${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Build 
