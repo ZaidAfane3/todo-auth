@@ -1,16 +1,14 @@
-name: Build, Push, and Update GitOps
+name: Build and Scan
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
 
 env:
   IMAGE_NAME: auth-service
   GCP_PROJECT_ID: personal-473312
-  GCP_ARTIFACT_LOCATION: us-central1
+  ZONE: us-central1
   GCP_REPO_NAME: microservice
-
-
 
 jobs:
   build-and-deploy:
@@ -22,20 +20,28 @@ jobs:
 
       - name: Set Global Variables
         run: |
-          echo "IMAGE=${{ env.GCP_ARTIFACT_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPO_NAME }}/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+          echo "REPO=${{ .env.ZONE }}-docker.pkg.dev" >> $GITHUB_ENV
+          echo "IMAGE=${{ .env.REPO }}/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPO_NAME }}/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
           echo "TAG=${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Build 
         run: |
           docker build -t ${{ env.IMAGE }}:${{ env.TAG }} .
           docker images
+
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
       - name: Test Trivy
         run: |
           trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 --format json ${{ env.IMAGE }}:${{ env.TAG }}
-# docker push $IMAGE:$TAG
-# echo "NEW_TAG=$TAG" >> $GITHUB_ENV
-# echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Push to GCP
+        run: |
+          docker push ${{ env.IMAGE }}:${{ env.TAG }}
