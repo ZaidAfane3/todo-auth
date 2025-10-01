@@ -1,6 +1,8 @@
-# Authentication Service
+# Authentication Service 
 
-A simple authentication service for elm-phase2 that provides user authentication with cookie-based sessions.
+A simple authentication service that provides user authentication with cookie-based sessions.
+
+Code is Developed By Cursor
 
 ## Features
 
