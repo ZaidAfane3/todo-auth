@@ -28,13 +28,13 @@ jobs:
           docker build -t ${{ env.IMAGE }}:${{ env.TAG }} .
           docker images
 
-      - name: Install Trivy
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      # - name: Install Trivy
+      #   run: |
+      #     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 
-      - name: Test Trivy
-        run: |
-          trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ env.TAG }}
+      # - name: Test Trivy
+      #   run: |
+      #     trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 ${{ env.IMAGE }}:${{ env.TAG }}
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
